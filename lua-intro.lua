@@ -23,6 +23,7 @@ local lua_a_legjobb = true
 
 local semmi = nil
 
+
 -- [[ MŰVELETEK (példák) ]]
 
 print(5 + 2)
@@ -67,6 +68,7 @@ end
 
 
 -- [[ CIKLUSOK ]]
+
 while false do
     print("soha!!")
 end
@@ -104,6 +106,7 @@ print(cos)  -- 0
 local trig2 = function(x)
     return math.tan(x), math.tanh(x)
 end
+
 
 -- [[ TÁBLÁK ]]
 
