@@ -2,4 +2,4 @@
 
 ### 2D Csoport Órai Projektek, Videók
 
-- [Teszt Projekt](https://github.com/doczi-dominik/ccg-2d-material/tree/main/test-project)
+- [Coin Gyűjtögető](https://github.com/doczi-dominik/ccg-2d-material/tree/main/coin_gyujto)
