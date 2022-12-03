@@ -36,7 +36,7 @@ end
 function p.updateIdle(dt)
     p.speed = p.IDLE_SPEED
 
-    if LK.isDown("x") or math.random(10) == 8 then
+    if LK.isDown("x") then
         table.insert(p.bullets, bullet.createBullet(p.x, p.y))
         p.state = "shooting"
     end
