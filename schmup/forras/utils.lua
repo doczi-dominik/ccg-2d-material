@@ -10,4 +10,8 @@ function m.boxCollision(x1, y1, w1, h1, x2, y2, w2, h2)
     )
 end
 
+function m.mid(min, v, max)
+    return math.max(min, math.min(v, max))
+end
+
 return m

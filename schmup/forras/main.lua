@@ -1,3 +1,5 @@
+math.randomseed(os.time())
+
 -- love.graphics/keyboard is csak egy tábla, 
 -- elmentjük egy rövidebb nevű globalba és 
 -- így nem kell kiírni mindig
@@ -14,10 +16,20 @@ WINDOW_H = LG.getHeight() / 2
 -- Példa a táblás kép alján
 LG.setDefaultFilter("nearest", "nearest")
 
-local player = require("player")
+STATES = {
+    MENU = require("menu.state"),
+    GAME = require("game.state")
+}
+
+CURRENT_STATE = STATES.MENU
+CURRENT_STATE.init()
 
 function love.update(dt)
-    player.update(dt)
+    CURRENT_STATE.update(dt)
+end
+
+function love.keypressed(key, scancode, isRepeat)
+    CURRENT_STATE.keypressed(key, scancode, isRepeat)
 end
 
 function love.draw()
@@ -25,5 +37,5 @@ function love.draw()
     -- így minden kétszer akkora lesz - és csak a
     -- koordináta rendszer fele marad a játék ablakban látható
     LG.scale(2, 2)
-    player.draw()
+    CURRENT_STATE.draw()
 end
