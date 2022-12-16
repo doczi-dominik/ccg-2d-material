@@ -1,3 +1,4 @@
+local utils = require("utils")
 
 local m = {}
 
@@ -10,6 +11,16 @@ function m.createBullet(x, y)
 
     b.x = x
     b.y = y
+
+    function b.collidesWith(x, y, w, h)
+        return utils.boxCollision(
+            x, y, w, h,
+            b.x - m.SPRITE_W/2,
+            b.y - m.SPRITE_H/2,
+            m.SPRITE_W,
+            m.SPRITE_H
+        )
+    end
 
     function b:update(dt)
         self.y = self.y - m.SPEED * dt

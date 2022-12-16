@@ -10,6 +10,11 @@ p.SPRITE_W, p.SPRITE_H = p.SPRITE:getDimensions()
 p.LASER_SPRITE = LG.newImage("assets/laser.png")
 p.LASER_SPRITE_W, p.LASER_SPRITE_H = p.LASER_SPRITE:getDimensions()
 
+p.SHOT_SFX = LA.newSource("assets/shot.wav", "static")
+
+p.LASER_SFX = LA.newSource("assets/laser_0.wav", "static")
+p.LASER_SFX:setLooping(true)
+
 p.IDLE_SPEED = 275
 p.LASER_SPEED = 100
 
@@ -21,7 +26,7 @@ p.ddx = 0
 p.ddy = 0
 p.bullets = {}
 p.state = "idle"
-p.laser_y = 0
+p.laser_cooldown = 180
 p.speed = 0
 
 function p.move(dt)
@@ -53,13 +58,17 @@ end
 
 function p.updateIdle(dt)
     p.speed = p.IDLE_SPEED
+    p.laser_cooldown = 180
 
     if LK.isDown("x") then
         table.insert(p.bullets, bullet.createBullet(p.x, p.y))
+        p.SHOT_SFX:stop()
+        p.SHOT_SFX:play()
         p.state = "shooting"
     end
 
     if LK.isDown("lshift") then
+        p.LASER_SFX:play()
         p.state = "laser"
     end
 end
@@ -70,17 +79,32 @@ function p.updateShooting(dt)
     end
 end
 
+function p.updateLasering(dt)
+    if not LK.isDown("lshift") then
+        p.state = "idle"
+    end
+end
+
 function p.updateLaser(dt)
     p.speed = p.LASER_SPEED
 
-    p.laser_y = p.y
-
-    while p.laser_y > 0 do
-        p.laser_y = p.laser_y - 1
+    for _, e in ipairs(ENEMIES.enemies) do
+        if utils.boxCollision(
+            e.x, e.y, e.size, e.size,
+            p.x - p.LASER_SPRITE_W/2,
+            0,
+            p.LASER_SPRITE_W,
+            p.y
+        ) then
+            e.damage(dt * 150)
+        end
     end
 
-    if not LK.isDown("lshift") then
-        p.state = "idle"
+    p.laser_cooldown = p.laser_cooldown - 1
+
+    if not LK.isDown("lshift") or p.laser_cooldown <= 0 then
+        p.LASER_SFX:stop()
+        p.state = "lasering"
     end
 end
 
@@ -89,6 +113,8 @@ function p.update(dt)
         p.updateIdle(dt)
     elseif p.state == "shooting" then
         p.updateShooting(dt)
+    elseif p.state == "lasering" then
+        p.updateLasering(dt)
     elseif p.state == "laser" then
         p.updateLaser(dt)
     end
@@ -96,13 +122,22 @@ function p.update(dt)
     p.move(dt)
 
     for i=#p.bullets, 1, -1 do
-        p.bullets[i]:update(dt)
+        local b = p.bullets[i]
+
+        b:update(dt)
+
+        for _, e in ipairs(ENEMIES.enemies) do
+            if b.collidesWith(e.x, e.y, e.size, e.size) then
+                e.damage(15 * dt * 150)
+                table.remove(p.bullets, i)
+            end
+        end
     end
 end
 
 function p.draw()
     if p.state == "laser" then
-        local sy = (p.laser_y - p.y) / p.LASER_SPRITE_H
+        local sy = (-p.y) / p.LASER_SPRITE_H
 
         LG.draw(p.LASER_SPRITE, p.x - p.LASER_SPRITE_W/2, p.y, 0, 1, sy)
     end

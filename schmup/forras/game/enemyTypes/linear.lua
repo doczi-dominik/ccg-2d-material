@@ -24,8 +24,9 @@ return function(x, y)
 
     function e:draw()
         LG.setColor(1, 0, 0)
-        LG.rectangle("fill", self.x, self.y, 32, 32)
+        LG.rectangle("fill", self.x, self.y, self.size, self.size)
         LG.setColor(1, 1, 1)
+        self.drawHP()
     end
 
     return e

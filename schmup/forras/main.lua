@@ -5,6 +5,7 @@ math.randomseed(os.time())
 -- így nem kell kiírni mindig
 LG = love.graphics
 LK = love.keyboard
+LA = love.audio
 
 -- Kimentjük az ablakméretet globalba
 -- Az osztás a love.draw()-ban leírt nyújtáshoz
