@@ -96,7 +96,7 @@ function p.updateLaser(dt)
             p.LASER_SPRITE_W,
             p.y
         ) then
-            e.damage(dt * 150)
+            e.damage(math.ceil(dt * 60))  -- Folyamatos damage, kell dt
         end
     end
 
@@ -128,7 +128,7 @@ function p.update(dt)
 
         for _, e in ipairs(ENEMIES.enemies) do
             if b.collidesWith(e.x, e.y, e.size, e.size) then
-                e.damage(15 * dt * 150)
+                e.damage(15)  -- Egyszeri damage, nem kell dt
                 table.remove(p.bullets, i)
             end
         end
